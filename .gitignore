@@ -22,5 +22,5 @@ Vagrantfile.local
 /drupal.make.yml
 /examples/prod/inventory
 /examples/prod/bootstrap/vars.yml
-/scripts/
+#/scripts/
 /drupal/
