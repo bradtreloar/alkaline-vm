@@ -106,18 +106,18 @@ drupal_domain: "{{ vagrant_hostname }}"
 drupal_site_name: "Drupal"
 drupal_install_profile: standard
 drupal_enable_modules: 
-  - 'devel'
-  - 'address'
-  - 'admin_toolbar'
-  - 'block_visibility_groups'
-  - 'google_map_field'
-  - 'metatag'
-  - 'paragraphs'
-  - 'pathauto'
-  - 'quick_node_clone'
-  - 'token'
-  - 'token_filter'
-drupal_account_name: 'Brad Treloar'
+  - "devel"
+  - "address"
+  - "admin_toolbar"
+  - "block_visibility_groups"
+  - "google_map_field"
+  - "metatag"
+  - "paragraphs"
+  - "pathauto"
+  - "quick_node_clone"
+  - "token"
+  - "token_filter"
+drupal_account_name: "Brad Treloar"
 drupal_account_pass: admin
 
 # Additional arguments or options to pass to `drush site-install`.

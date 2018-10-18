@@ -12,7 +12,7 @@ rm $DRUPAL/data/*
 
 # Export database
 cd $DRUPAL/web
-drush sql:dump > $DRUPAL/data/drupal_$(date +%F_%R).sql
+drush sql:dump > $DRUPAL/data/drupal.sql
 
 drush config:export
 

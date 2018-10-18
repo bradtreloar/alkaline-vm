@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Prepare PHP for Drush
+export PHPRC=$HOME/.drush
+export PHP_INI_SCAN_DIR=$HOME/.drush
+
+# Prepare Drupal site for archiving
+$HOME/bin/drush --root="$HOME/drupal/web" sql-dump > $HOME/drupal/data/drupal.sql
+
+# Create the archive
+mkdir -p $HOME/archives
+tar -czf $HOME/archives/archive_$(date +%F_%R).tar.gz drupal

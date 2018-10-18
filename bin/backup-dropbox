@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Create a new archive of the site's data and files
+$HOME/bin/archive-site
+
+# Upload the archive to Dropbox then delete the local copy
+$HOME/bin/dropbox -f $HOME/.dropbox_uploader upload archives/* /archives/ && rm $HOME/archives/*
