@@ -119,7 +119,7 @@ drupal_enable_modules:
   - "r4032login"
   - "token"
   - "token_filter"
-drupal_account_name: "Brad Treloar"
+drupal_account_name: admin
 drupal_account_pass: admin
 
 # Additional arguments or options to pass to `drush site-install`.
