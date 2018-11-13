@@ -69,24 +69,12 @@ drush_make_options: "--no-gitinfofile"
 drupal_build_composer: false
 drupal_composer_path: "{{ config_dir }}/drupal.composer.json"
 drupal_composer_install_dir: "/var/www/drupalvm/drupal"
-drupal_composer_dependencies:
-  - "drupal/devel:^1.2"
-  - "drupal/address:^1.4"
-  - "drupal/admin_toolbar:^1.24"
-  - "drupal/block_visibility_groups:^1.2"
-  - "drupal/google_map_field:^1.5"
-  - "drupal/metatag:^1.5"
-  - "drupal/paragraphs:^1.3"
-  - "drupal/pathauto:^1.2"
-  - "drupal/quick_node_clone:^1.10"
-  - "drupal/r4032login:^1.1"
-  - "drupal/token:^1.3"
-  - "drupal/token_filter:^1.0"
+drupal_composer_dependencies: []
 
 # Set this to 'true' and 'drupal_build_makefile', 'drupal_build_composer' to 'false'
 # if you are using Composer's create-project as a site deployment strategy.
 drupal_build_composer_project: true
-drupal_composer_project_package: "drupal-composer/drupal-project:8.x-dev"
+drupal_composer_project_package: "bradtreloar/alkaline-project:dev-8.x-1.x"
 drupal_composer_project_options: "--prefer-dist --stability dev --no-interaction"
 
 # Set this to 'false' if you don't need to install drupal (using the drupal_*
@@ -105,20 +93,8 @@ drupal_db_host: localhost
 drupal_major_version: 8
 drupal_domain: "{{ vagrant_hostname }}"
 drupal_site_name: "Drupal"
-drupal_install_profile: standard
-drupal_enable_modules: 
-  - "devel"
-  - "address"
-  - "admin_toolbar"
-  - "block_visibility_groups"
-  - "google_map_field"
-  - "metatag"
-  - "paragraphs"
-  - "pathauto"
-  - "quick_node_clone"
-  - "r4032login"
-  - "token"
-  - "token_filter"
+drupal_install_profile: alkaline
+drupal_enable_modules: []
 drupal_account_name: admin
 drupal_account_pass: admin
 
