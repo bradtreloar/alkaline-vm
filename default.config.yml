@@ -93,7 +93,7 @@ drupal_db_host: localhost
 drupal_major_version: 8
 drupal_domain: "{{ vagrant_hostname }}"
 drupal_site_name: "Drupal"
-drupal_install_profile: alkaline
+drupal_install_profile: alkaline_distribution
 drupal_enable_modules: []
 drupal_account_name: admin
 drupal_account_pass: admin
