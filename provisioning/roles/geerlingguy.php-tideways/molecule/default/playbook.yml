@@ -5,7 +5,6 @@
 
   vars:
     php_enable_webserver: false
-    php_version: '5.6'
 
   pre_tasks:
     - name: Update apt cache.
@@ -17,8 +16,11 @@
       when: ansible_os_family == 'RedHat'
     - role: geerlingguy.php-versions
     - role: geerlingguy.php
+    - role: geerlingguy.php-tideways
 
   post_tasks:
-    - name: Confirm PHP version is correct.
-      shell: "php -v | grep -F '{{ php_version }}'"
+    - name: Run test script to confirm Tideways is working.
+      script: tideways-test.php
+      args:
+        executable: php
       changed_when: false
