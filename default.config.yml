@@ -93,7 +93,7 @@ drupal_db_host: localhost
 # Settings for installing a Drupal site if 'drupal_install_site:' is 'true'.
 drupal_major_version: 8
 drupal_domain: "{{ vagrant_hostname }}"
-drupal_site_name: "Drupal"
+drupal_site_name: "Alkaline"
 drupal_install_profile: alkaline_distribution
 drupal_enable_modules: []
 drupal_account_name: admin
