@@ -1,0 +1,10 @@
+---
+- hosts: production
+
+  pre_tasks:
+    - import_tasks: tasks/config.yml
+
+  tasks:
+    - import_tasks: tasks/configure-auth.yml
+    - import_tasks: tasks/configure-php.yml
+    - import_tasks: tasks/install-drush-launcher.yml

@@ -1,0 +1,11 @@
+---
+- name: Make sure ~/bin folder exists.
+  shell: mkdir ~/bin
+  args:
+    creates: ~/bin
+
+- name: Install Drush Launcher.
+  get_url:
+    url: "https://github.com/drush-ops/drush-launcher/releases/download/0.6.0/drush.phar"
+    dest: ~/bin/drush
+    mode: 0755

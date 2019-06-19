@@ -1,0 +1,17 @@
+---
+- name: Create custom php.ini
+  shell: mkdir -p ~/etc/php && printf "disable_functions=\nmemory_limit=-1\n" > ~/etc/php/php.ini
+  args:
+    creates: ~/etc/php/php.ini
+
+- name: Get the path to alt_php.ini
+  shell: 'php --ini | sed -nE "s_Scan[A-Za-z\.: ]+([a-z0-9/]+)_\1_p"'
+  register: php_ini_config
+
+- set_fact: 
+    alt_php_ini: '{{ php_ini_config.stdout.strip() }}'
+
+- name: Add custom php.ini path to scan list
+  lineinfile:
+    path: ~/.bash_profile
+    line: "export PHP_INI_SCAN_DIR={{ alt_php_ini }}:$HOME/etc/php"

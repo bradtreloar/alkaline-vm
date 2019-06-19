@@ -1,0 +1,42 @@
+---
+- name: Get Drush version
+  shell: 'cd {{ drupal_root }} && {{ drush }} version | sed -E "s/[A-Za-z: ]+([0-9\.]+)/\1/"'
+  # shell: '~/bin/drush version'
+  register: get_drush_version
+
+- set_fact: 
+    drush_version: '{{ get_drush_version.stdout.split(".") }}'
+
+- name: Get Drupal version
+  shell: 'cd {{ drupal_root }}/web && {{ drush }} status | sed -En "s/\sDrupal version\s+:\s+([0-9\.]+)/\1/p"'
+  register: get_drupal_version
+
+- set_fact: 
+    drupal_version: '{{ get_drupal_version.stdout.split(".") }}'
+
+- name: Check that site is managed by Composer
+  stat: 
+    path: ~/drupal/composer.json
+  register: composer_json
+
+- set_fact:
+    using_composer: composer_json.stat.exists
+
+- name: Install Composer packages
+  composer:
+    command: install
+    arguments: --no-dev
+    working_dir: ~/drupal
+  when: using_composer
+
+- name: Update Drupal database
+  shell: cd {{ drupal_root }} && {{ drush }} updatedb -y
+  when: drupal_version[0] >= 8 and drush_version[0] >= 9
+
+# - name: Refresh Drupal Cache (version 7)
+#   shell: 'cd {{ drupal_root }}/web && {{ drush }} cc all'
+#   when: drupal_version[0] == 7
+
+# - name: Refresh Drupal Cache (version 8+)
+#   shell: 'cd {{ drupal_root }} && {{ drush }} cr'
+#   when: drupal_version[0] >= 8

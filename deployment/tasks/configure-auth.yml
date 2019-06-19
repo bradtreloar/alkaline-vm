@@ -1,0 +1,54 @@
+---
+- name: Check if host has been added to localhost's SSH config
+  delegate_to: localhost
+  lineinfile: 
+    dest: ~/.ssh/config
+    line: "Host {{ vagrant_machine_name }}"
+  check_mode: yes
+  register: host_in_config
+
+- set_fact:
+    host_not_in_config: host_in_config is changed
+
+- name: Add host to localhost's SSH config.
+  delegate_to: localhost
+  shell: |
+    echo "Host {{ vagrant_machine_name }}
+      HostName {{ ansible_host }}
+      User     {{ ansible_user }}
+      Port     {{ ansible_port }}
+    " >> ~/.ssh/config
+  when: host_not_in_config
+
+- name: Generate localhost's SSH key.
+  delegate_to: localhost
+  shell: ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
+  args:
+    creates: ~/.ssh/id_rsa
+
+- name: Get localhost's public key.
+  delegate_to: localhost
+  slurp:
+    src: ~/.ssh/id_rsa.pub
+  register: localhost_public_key
+
+- name: Add localhost's authorised key to host.
+  authorized_key:
+    user: "{{ ansible_user }}"
+    key: "{{ localhost_public_key.content.decode('base64') }}"
+
+- name: Generate SSH key.
+  shell: ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
+  args:
+    creates: ~/.ssh/id_rsa
+
+- name: Get host's public key.
+  slurp:
+    src: ~/.ssh/id_rsa.pub
+  register: public_key
+
+- name: Add host's authorised key to origin.
+  delegate_to: origin
+  authorized_key:
+    user: "{{ hostvars['origin']['ansible_user'] }}"
+    key: "{{ public_key.content.decode('base64') }}"
