@@ -3,7 +3,7 @@
   delegate_to: localhost
   lineinfile: 
     dest: ~/.ssh/config
-    line: "Host {{ vagrant_machine_name }}"
+    line: "Host {{ alkaline_hostname }}"
   check_mode: yes
   register: host_in_config
 
@@ -13,7 +13,7 @@
 - name: Add host to localhost's SSH config.
   delegate_to: localhost
   shell: |
-    echo "Host {{ vagrant_machine_name }}
+    echo "Host {{ alkaline_hostname }}
       HostName {{ ansible_host }}
       User     {{ ansible_user }}
       Port     {{ ansible_port }}
