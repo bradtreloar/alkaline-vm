@@ -1,0 +1,14 @@
+---
+- set_fact:
+    drupal_dir: ../drupal
+
+- set_fact
+    origin_vars: "{{ hostvars['origin'] }}"
+
+- set_fact
+    origin_url: "ssh://{{ origin_vars['ansible_host'] }}:/home/{{ origin_vars['ansible_user'] }}/git/{{ alkaline_hostname }}.git"
+
+- name: Add remote to git repo.
+  shell: "git remote add origin {{ origin_url }}"
+  args:
+    chdir: "{{ drupal_dir }}"

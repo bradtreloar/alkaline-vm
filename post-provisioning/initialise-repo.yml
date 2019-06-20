@@ -1,0 +1,18 @@
+---
+- set_fact:
+    drupal_dir: "/var/www/drupalvm/drupal"
+
+- name: Check if a Drupal codebase is present.
+  stat:
+    path: "{{ drupal_dir }}"
+  register: drupal_codebase
+
+- set_fact:
+    drupal_codebase_exists: "{{ drupal_codebase.stat.exists }}"
+
+- name: Initialise Git repository for Drupal site.
+  shell: git init
+  when: drupal_codebase_exists
+  args:
+    creates: ".git"
+    chdir: "{{ drupal_dir }}"
