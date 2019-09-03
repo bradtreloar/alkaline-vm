@@ -1,0 +1,12 @@
+---
+- hosts: production
+
+  vars_files:
+    - ../default.config.yml
+
+  pre_tasks:
+    - import_tasks: tasks/config.yml
+
+  tasks:
+    - import_tasks: tasks/export-data.yml
+    - import_tasks: tasks/fetch-files.yml

@@ -1,0 +1,22 @@
+---
+- set_fact:
+    origin_vars: "{{ hostvars['origin'] }}"
+
+- set_fact:
+    origin_url: "ssh://origin:/home/{{ origin_vars['ansible_user'] }}/git/{{ alkaline_hostname }}.git"
+
+- name: Clone site repository.
+  shell: "git clone {{ origin_url }} drupal -b {{ drupal_major_version }}.x"
+  args:
+    creates: ~/drupal
+
+- name: Remove ~/public_html folder
+  file:
+    state: absent
+    path: "~/public_html"
+  
+- name: Symlink ~/public_html to ~/drupal/web
+  file:
+    src: "~/drupal/web"
+    dest: "~/public_html"
+    state: link

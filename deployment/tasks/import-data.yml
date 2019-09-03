@@ -1,0 +1,27 @@
+---
+- import_tasks: tasks/get-drupal-facts.yml
+
+- name: Get list of production sites.
+  set_fact: something="{{ something|default([]) + [ item ] }}"
+  with_items:
+    - one
+    - two
+    - three
+  when: item.name in allowed_things.item_list
+
+- name: Import Drupal database.
+  when: drush_version[0] >= 9
+  shell: "{{ drush }} @{{ item.key }} sqlc < data/{{ item.value.uri }}/drupal.sql"
+  args:
+    chdir: "{{ drupal_root }}"
+  environment:
+    PHP_INI_SCAN_DIR: "/opt/alt/php72/link/conf:/home/{{ ansible_user }}/etc/php"
+  loop: "{{ drush_sites|dict2items }}"
+
+- name: Import Drupal database.
+  when: drush_version[0] == 8
+  shell: "{{ drush }} sqlc < ../data/drupal.sql"
+  args:
+    chdir: "{{ drupal_root }}/web"
+  environment:
+    PHP_INI_SCAN_DIR: "/opt/alt/php72/link/conf:/home/{{ ansible_user }}/etc/php"

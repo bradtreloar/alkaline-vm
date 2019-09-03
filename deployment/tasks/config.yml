@@ -2,7 +2,13 @@
 - name: Define config_dir.
   set_fact:
     config_dir: "{{ playbook_dir }}/.."
+    drupal_dir: "{{ playbook_dir }}/../drupal"
   when: config_dir is not defined
+
+- name: Define drupal_dir.
+  set_fact:
+    drupal_dir: "{{ playbook_dir }}/../drupal"
+  when: drupal_dir is not defined
 
 - name: Include optional configuration files.
   include_vars: "{{ item }}"
@@ -11,3 +17,8 @@
     - "{{ config_dir }}/secrets.yml"
     - "{{ config_dir }}/{{ lookup('env', 'DRUPALVM_ENV')|default(drupalvm_env, true)|default(ansible_env.DRUPALVM_ENV)|default(omit) }}.config.yml"
     - "{{ config_dir }}/local.config.yml"
+
+- name: Include Drush sites config.
+  include_vars: 
+    file: "{{ drupal_dir }}/drush/sites/self.site.yml"
+    name: drush_sites

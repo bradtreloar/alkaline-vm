@@ -1,0 +1,15 @@
+---
+- hosts: production
+
+  vars_files:
+    - ../default.config.yml
+
+  pre_tasks:
+    - import_tasks: tasks/config.yml
+
+  tasks:
+    # - import_tasks: tasks/deploy-repo.yml
+    # - import_tasks: tasks/composer-install.yml
+    # - import_tasks: tasks/copy-files.yml
+    - import_tasks: tasks/import-data.yml
+    

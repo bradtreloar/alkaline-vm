@@ -1,19 +1,31 @@
 ---
-- name: Get Drupal and Drush paths
-  include_vars:
-    drush: '~/bin/drush'
-    drupal_root: '~/drupal'
+- set_fact:
+    drush: "~/bin/drush"
+    drupal_root: "~/drupal"
 
 - name: Get Drush version
-  shell: 'cd {{ drupal_root }} && {{ drush }} version | sed -E "s/[A-Za-z: ]+([0-9\.]+)/\1/"'
+  shell: '{{ drush }} version | sed -E "s/[A-Za-z: ]+([0-9\.]+)/\1/"'
   register: get_drush_version
+  args:
+    chdir: "{{ drupal_root }}"
+
+- name: Get Drupal version
+  shell: '{{ drush }} status | sed -En "s/\sDrupal version\s+:\s+([0-9\.]+)/\1/p"'
+  register: get_drupal_version
+  args:
+    chdir: "{{ drupal_root }}"
+
+- name: Check that site is managed by Composer
+  stat: 
+    path: ~/drupal/composer.json
+  register: composer_json
+
+- name: Check for drush site aliases
+  include_vars: 
+    file: "{{ drupal_dir }}/drush/sites/self.site.yml"
+    name: drush_sites
 
 - set_fact: 
     drush_version: '{{ get_drush_version.stdout.split(".") }}'
-
-- name: Get Drupal version
-  shell: 'cd {{ drupal_root }}/web && {{ drush }} status | sed -En "s/\sDrupal version\s+:\s+([0-9\.]+)/\1/p"'
-  register: get_drupal_version
-
-- set_fact: 
     drupal_version: '{{ get_drupal_version.stdout.split(".") }}'
+    using_composer: "{{ composer_json.stat.exists }}"

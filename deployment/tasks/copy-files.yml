@@ -1,0 +1,27 @@
+---
+- set_fact:
+    drupal_dir: "../drupal"
+
+- name: Find site folders
+  delegate_to: localhost
+  find:
+    paths: "{{ drupal_dir }}/web/sites"
+    file_type: directory
+  register: site_folders
+
+- name: Copy database dump to host
+  copy:
+    src: "{{ drupal_dir }}/data/"
+    dest: "~/drupal/data/"
+
+- name: Copy site files to host
+  copy:
+    src: "{{ item.path }}/files/"
+    dest: "~/drupal/{{ item.path }}/files/"
+  loop: "{{ site_folders.files }}"
+
+- name: Copy production settings.php to host
+  copy:
+    src: "{{ item.path }}/production.settings.php"
+    dest: "~/drupal/{{ item.path }}/settings.php"
+  loop: "{{ site_folders.files }}"

@@ -1,0 +1,18 @@
+---
+- import_tasks: tasks/get-drupal-facts.yml
+
+- name: Import Drupal database.
+  when: drush_version[0] >= 9
+  shell: "{{ drush }} sql:dump > data/drupal.sql"
+  args:
+    chdir: "{{ drupal_root }}"
+  environment:
+    PHP_INI_SCAN_DIR: "/opt/alt/php72/link/conf:/home/{{ ansible_user }}/etc/php"
+
+- name: Import Drupal database.
+  when: drush_version[0] == 8
+  shell: "{{ drush }} sql-dump > data/drupal.sql"
+  args:
+    chdir: "{{ drupal_root }}/web"
+  environment:
+    PHP_INI_SCAN_DIR: "/opt/alt/php72/link/conf:/home/{{ ansible_user }}/etc/php"

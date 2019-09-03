@@ -1,27 +1,55 @@
 ---
+- name: Create SSH config file
+  file:
+    path: ~/.ssh/config
+    state: touch
+    mode: u=rw,g=r,o=r
+
 - name: Check if host has been added to localhost's SSH config
   delegate_to: localhost
   lineinfile: 
     dest: ~/.ssh/config
     line: "Host {{ alkaline_hostname }}"
   check_mode: yes
-  register: host_in_config
+  register: host_in_localhost_config
+
+- name: Check if origin has been added to host's SSH config
+  lineinfile: 
+    dest: ~/.ssh/config
+    line: "Host origin"
+  check_mode: yes
+  register: origin_in_host_config
 
 - set_fact:
-    host_not_in_config: host_in_config is changed
+    host_not_in_localhost_config: host_in_localhost_config is changed
+    origin_not_in_host_config: origin_in_host_config is changed
 
 - name: Add host to localhost's SSH config.
+  when: host_not_in_localhost_config
   delegate_to: localhost
-  shell: |
-    echo "Host {{ alkaline_hostname }}
-      HostName {{ ansible_host }}
-      User     {{ ansible_user }}
-      Port     {{ ansible_port }}
-    " >> ~/.ssh/config
-  when: host_not_in_config
+  shell: 'echo "{{ item }}" >> ~/.ssh/config'
+  loop:
+    - "Host {{ alkaline_hostname }}"
+    - "    HostName {{ ansible_host }}"
+    - "    User     {{ ansible_user }}"
+    - "    Port     {{ ansible_port }}"
+
+- name: Add origin to host's SSH config
+  when: origin_not_in_host_config
+  shell: 'echo "{{ item }}" >> ~/.ssh/config'
+  loop:
+    - "Host origin"
+    - "    HostName {{ hostvars['origin']['ansible_host'] }}"
+    - "    User     {{ hostvars['origin']['ansible_user'] }}"
+    - "    Port     {{ hostvars['origin']['ansible_port'] }}"
 
 - name: Generate localhost's SSH key.
   delegate_to: localhost
+  shell: ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
+  args:
+    creates: ~/.ssh/id_rsa
+
+- name: Generate host's SSH key.
   shell: ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
   args:
     creates: ~/.ssh/id_rsa
@@ -32,20 +60,15 @@
     src: ~/.ssh/id_rsa.pub
   register: localhost_public_key
 
-- name: Add localhost's authorised key to host.
-  authorized_key:
-    user: "{{ ansible_user }}"
-    key: "{{ localhost_public_key.content.decode('base64') }}"
-
-- name: Generate SSH key.
-  shell: ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
-  args:
-    creates: ~/.ssh/id_rsa
-
 - name: Get host's public key.
   slurp:
     src: ~/.ssh/id_rsa.pub
   register: public_key
+
+- name: Add localhost's authorised key to host.
+  authorized_key:
+    user: "{{ ansible_user }}"
+    key: "{{ localhost_public_key.content.decode('base64') }}"
 
 - name: Add host's authorised key to origin.
   delegate_to: origin

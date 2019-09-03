@@ -1,0 +1,25 @@
+---
+- hosts: production
+
+  vars_files:
+    - ../default.config.yml
+
+  pre_tasks:
+    - import_tasks: tasks/config.yml
+    - import_tasks: tasks/get-drupal-facts.yml
+
+  tasks:    
+    - name: Pull updates from source.
+      shell: git pull
+      args:
+        chdir: ~/drupal
+
+    - import_tasks: tasks/composer-install.yml
+
+    - name: Update Drupal database.
+      when: drush_version[0] >= 9
+      shell: "{{ drush }} updb -y"
+      args:
+        chdir: ~/drupal
+      environment:
+        PHP_INI_SCAN_DIR: "/opt/alt/php72/link/conf:/home/{{ ansible_user }}/etc/php"

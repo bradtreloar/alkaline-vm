@@ -1,0 +1,8 @@
+---
+- name: Install composer packages.
+  composer: 
+    command: install
+    no-dev: yes
+    working_dir: ~/drupal
+  environment:
+    PHP_INI_SCAN_DIR: "/opt/alt/php72/link/conf:/home/{{ ansible_user }}/etc/php"

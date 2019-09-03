@@ -1,0 +1,13 @@
+---
+- set_fact:
+    drupal_dir: "../drupal"
+
+# - name: Copy database dump z host
+#   copy:
+#     src: "{{ drupal_dir }}/data/drupal.sql"
+#     dest: "~/drupal/data/"
+
+# - name: Copy site files to host
+#   copy:
+#     src: "{{ drupal_dir }}/web/sites/default/files/"
+#     dest: "~/drupal/web/sites/default/files/"
